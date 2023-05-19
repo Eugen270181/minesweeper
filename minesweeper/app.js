@@ -1,0 +1,1 @@
+alert("Let's begin! Minesweeper game!");
