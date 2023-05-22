@@ -8,7 +8,7 @@ const headerTitle = document.createElement('h1');
 
 WRAPPER.classList.add('wrapper');
 HEADER.classList.add('header');
-RESULT.setAttribute('id', 'res');
+RESULT.setAttribute('id', 'result');
 TAB.classList.add('table');
 headerTitle.classList.add('header-title');
 
@@ -23,6 +23,8 @@ headerTitle.innerHTML = 'MinesWeeper!';
 FLAGS.innerHTML = 'Uncleared mines left: <span id=\'flagsCount\'></span>';
 /////////////////////////////////////////////////////////////////
   const flagsCount = document.querySelector('#flagsCount');
+  let transaction = 0;
+  let time = performance.now();
   let minesCount = 10;
   let tableSize = 10;
   let flags = 0;
@@ -50,7 +52,8 @@ FLAGS.innerHTML = 'Uncleared mines left: <span id=\'flagsCount\'></span>';
         check(item);
       }
 
-      item.oncontextmenu = function() {
+      item.oncontextmenu = function(evt) {
+        evt.preventDefault(CloseEvent);
         flag(item);
       }
       /////////////////////////////////////////////////////////
@@ -101,7 +104,7 @@ FLAGS.innerHTML = 'Uncleared mines left: <span id=\'flagsCount\'></span>';
         item.innerHTML = 'V';
         flags ++;
         flagsCount.innerHTML = minesCount - flags;
-        //isGameWon();
+        isGameWon();
       } else {
         item.classList.remove('flag');
         item.innerHTML = '';
@@ -115,24 +118,56 @@ FLAGS.innerHTML = 'Uncleared mines left: <span id=\'flagsCount\'></span>';
     if (gameOver) return;
     if (item.classList.contains('checked') || item.classList.contains('flag')) return;
     if (item.classList.contains('mine')) {
-      //gameLost(item);
+      gameLost(item);
     } else {
+      transaction++;
       let alarm = item.getAttribute('dangerLevel');
       if (alarm !=0) {
         if (alarm == 1) item.classList.add('alarm1');
         if (alarm == 2) item.classList.add('alarm2');
         if (alarm == 3) item.classList.add('alarm3');
         if (alarm == 4) item.classList.add('alarm4');
+        if (alarm == 5) item.classList.add('alarm5');
         item.classList.add('checked');
         item.innerHTML = alarm;
         return;
       }
       //checkEmpty(item, item.id);
     }
-    item.classList.add('checked')
+    item.classList.add('checked');
   }
   
+  //Game Lost
+  function gameLost(item) {
+    RESULT.innerHTML = 'Game over. Try again';
+    gameOver = true;
+    //show hidden other mines
+    Arr.forEach(elem => {
+      if (elem.classList.contains('mine')) {
+        elem.innerHTML = 'Q';
+        elem.classList.remove('mine');
+        elem.classList.add('checked');
+      }
+    })
+  }
+  
+  //Is Game Won?
+  function isGameWon() {
+  let countFlagMines = 0;
 
+    for (let i = 0; i < Arr.length; i++) {
+      if (Arr[i].classList.contains('flag') && Arr[i].classList.contains('mine')) {
+        countFlagMines++;
+      }
+      if (countFlagMines === minesCount) {
+        time = Math.trunc((performance.now()-time)/1000);
+        RESULT.innerHTML = 'Hooray! You found all mines in '+time+' seconds and '+transaction+' moves!';
+        RESULT.style.color = 'orange';
+        gameOver = true;
+      }
+    }
+  }
+  
 
 
 

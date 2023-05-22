@@ -46,19 +46,27 @@ body {
 }
 
 .alarm1 {
-  color=blue;
+  color:blue;
 }
 
 .alarm2 {
-  color=green;
+  color:green;
 }
 
 .alarm3 {
-  color=orange;
+  color:orange;
 }
 
 .alarm4 {
-  color=red;
+  color:red;
+}
+
+.alarm5 {
+  color:blueviolet;
+}
+
+#result {
+  color:red;
 }
 
 @media (max-width: 500px) {
