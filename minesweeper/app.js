@@ -20,16 +20,44 @@ WRAPPER.appendChild(FLAGS);
 document.body.appendChild(WRAPPER);
 
 headerTitle.innerHTML = 'MinesWeeper!';
-FLAGS.innerHTML = 'Flags count: <span id=\'flagsCount\'>10</span>';
+FLAGS.innerHTML = 'Uncleared mines left: <span id=\'flagsCount\'></span>';
 /////////////////////////////////////////////////////////////////
-  const res = document.querySelector('#res');
-  const table = document.querySelector('.table');
   const flagsCount = document.querySelector('#flagsCount');
-  let bombCount = 10;
-  let width = 10;
+  let minesCount = 10;
+  let tableSize = 10;
   let flags = 0;
-  let arr = [];
+  let Arr = [];
   let gameOver = false;
+  
+  //create Field of cells
+  function createTable() {
+    flagsCount.innerHTML = minesCount;
+
+    const minesArr = Array(minesCount).fill('mine');
+    const emptyArr = Array(tableSize*tableSize - minesCount).fill('empty');
+    const randArr = emptyArr.concat(minesArr).sort(() => 0.5-Math.random());
+    //console.log(randArr.join("|"));
+
+    for(let i = 0; i < tableSize*tableSize; i++) {
+      const item = document.createElement('div');
+      item.setAttribute('id', i);
+      item.classList.add(randArr[i]);
+      Arr.push(item);
+      TAB.appendChild(item);
+      /////item-events - onclick & oncontextmenu/////////////////
+      item.onclick = function(e) {
+        item.style.backgroundColor = "red";
+      }
+
+      item.oncontextmenu = function(e) {
+        alert("oncontextmenu");
+      }
+      /////////////////////////////////////////////////////////
+    }
+  }
+  
+  createTable();
+
 
 
 
