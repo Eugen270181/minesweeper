@@ -101,7 +101,7 @@ FLAGS.innerHTML = 'Uncleared mines left: <span id=\'flagsCount\'></span>';
         item.innerHTML = 'V';
         flags ++;
         flagsCount.innerHTML = minesCount - flags;
-        //checkVictory();
+        //isGameWon();
       } else {
         item.classList.remove('flag');
         item.innerHTML = '';
@@ -110,9 +110,26 @@ FLAGS.innerHTML = 'Uncleared mines left: <span id=\'flagsCount\'></span>';
       }
     }
   }
-  //check item
-  function check(item){
-    
+  //check item - action
+  function check(item) {
+    if (gameOver) return;
+    if (item.classList.contains('checked') || item.classList.contains('flag')) return;
+    if (item.classList.contains('mine')) {
+      //gameLost(item);
+    } else {
+      let alarm = item.getAttribute('dangerLevel');
+      if (alarm !=0) {
+        if (alarm == 1) item.classList.add('alarm1');
+        if (alarm == 2) item.classList.add('alarm2');
+        if (alarm == 3) item.classList.add('alarm3');
+        if (alarm == 4) item.classList.add('alarm4');
+        item.classList.add('checked');
+        item.innerHTML = alarm;
+        return;
+      }
+      //checkEmpty(item, item.id);
+    }
+    item.classList.add('checked')
   }
   
 
