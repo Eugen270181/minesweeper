@@ -37,7 +37,8 @@ FLAGS.innerHTML = 'Uncleared mines left: <span id=\'flagsCount\'></span>';
     const emptyArr = Array(tableSize*tableSize - minesCount).fill('empty');
     const randArr = emptyArr.concat(minesArr).sort(() => 0.5-Math.random());
     //console.log(randArr.join("|"));
-
+    //create Array of randon div elem with class empty or mine and id = number elem
+    //adding elemets in HTML structure
     for(let i = 0; i < tableSize*tableSize; i++) {
       const item = document.createElement('div');
       item.setAttribute('id', i);
@@ -45,14 +46,25 @@ FLAGS.innerHTML = 'Uncleared mines left: <span id=\'flagsCount\'></span>';
       Arr.push(item);
       TAB.appendChild(item);
       /////item-events - onclick & oncontextmenu/////////////////
-      item.onclick = function(e) {
+      item.onclick = function() {
         item.style.backgroundColor = "red";
       }
 
-      item.oncontextmenu = function(e) {
-        alert("oncontextmenu");
+      item.oncontextmenu = function() {
+        //alert("oncontextmenu");
+        
       }
       /////////////////////////////////////////////////////////
+    }
+    
+    //found count of mines for every iteam in array and set this nuber as attr - dangerLevel 
+    for (let i = 0; i < Arr.length; i++) {
+      let dangerLevel = 0;
+
+      if (Arr[i].classList.contains('empty')) {
+
+        Arr[i].setAttribute('dangerLevel', dangerLevel);
+      }
     }
   }
   
