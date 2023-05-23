@@ -30,6 +30,7 @@ body {
   text-align: center;
 }
 
+.start,
 .mine,
 .empty,
 .checked {
@@ -70,6 +71,9 @@ body {
 }
 
 @media (max-width: 500px) {
+  .wrapper {
+    width: 320px;
+  }
   .table {
     background-color: green;
   }
