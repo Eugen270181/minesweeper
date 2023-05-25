@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (Arr[i].classList.contains('empty')) {
         alarm=dangerLevel(i);
         Arr[i].setAttribute('dangerLevel', alarm);
-        Arr[i].innerHTML=alarm;
+        //Arr[i].innerHTML=alarm;
       }
     }
     check(document.getElementById(idFirstCell));
