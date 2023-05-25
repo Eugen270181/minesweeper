@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const timeCount = document.querySelector('#timeCount');
   flagsCount.innerHTML = minesCount;
   stepsCount.innerHTML = 0;
-  timeCount.innerHTML = '000';
+  timeCount.innerHTML = '00';
   for(let i = 0; i < tableSize*tableSize; i++) {
     const item = document.createElement('div');
     item.setAttribute('id', i);
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
     RESULT.innerHTML='';
     flagsCount.innerHTML = minesCount;
     stepsCount.innerHTML = 0;
-    timeCount.innerHTML = '000';
+    timeCount.innerHTML = '00';
     TAB.innerHTML = '';
     for(let i = 0; i < tableSize*tableSize; i++) {
       const item = document.createElement('div');
@@ -59,28 +59,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   }
- //////////////////////////////////////////////////////////////////
   function startGame(idFirstCell) {
-    let step = 0; 
+    let step = 0; let timer = '00';
+    let time = performance.now();
     let Arr = new Array();
     let gameOver = false;
     let flags = 0;
-    let time = 0;
-    let timer;
-    function TimerStartStop(arg){
-      if (arg) {
-        timer = setInterval(() => {
-          time++;
-          timeCount.innerHTML = String(time).padStart(3, '0');
-        }, 1000);
-      } else {
-        clearInterval(timer);
-        //timeCount.innerHTML = "000";
-        time = 0;
-      }
-    }  
-    //start timer
-    TimerStartStop(true); 
+        
     //check item - action
     function check(item) {
       if (gameOver) return;
@@ -101,13 +86,11 @@ document.addEventListener('DOMContentLoaded', () => {
           item.innerHTML = alarm;
           return;
         }
-        dangerLevel(parseInt(item.id,10),true);
+        getAdjacentCells(parseInt(item.id,10));
       }
-      item.classList.add('checked');
     }
-    
-    function dangerLevel(itemNumber, checkEmpty = false) {
-      res=0;
+     
+    function getAdjacentCells(itemNumber){
       const i=Math.trunc(itemNumber/tableSize);
       const j=(itemNumber % tableSize);
       const iTop=itemNumber-tableSize;
@@ -122,32 +105,22 @@ document.addEventListener('DOMContentLoaded', () => {
       const Bottom=((iBottom) <= (tableSize**2-1));
       const Left=j>0;
       const Right=j<tableSize-1;
+      const Square = [
+        [iTop, Top],
+        [iTopLeft, Top && Left],
+        [iTopRight, Top && Right],
+        [iBottom, Bottom],
+        [iBottomLeft, Bottom && Left],
+        [iBottomRight, Bottom && Right],
+        [iLeft, Left],
+        [iRight, Right]
+      ];
       
-      //top
-      if (Top && Arr[iTop].classList.contains('mine')) res++;
-      else if (checkEmpty && Top) check(Arr[iTop]);
-      //bottom
-      if (Bottom && Arr[iBottom].classList.contains('mine') ) res++;
-      else if (checkEmpty && Bottom) check(Arr[iBottom]);
-      //left
-      if (Left && Arr[iLeft].classList.contains('mine')) res++;
-      else if (checkEmpty && Left) check(Arr[iLeft]);
-      //left-top
-      if (Left && Top && Arr[iTopLeft].classList.contains('mine')) res++;
-      else if (checkEmpty && Left && Top) check(Arr[iTopLeft]);
-      //left-bottom
-      if (Left && Bottom && Arr[iBottomLeft].classList.contains('mine')) res++;
-      else if (checkEmpty && Left && Bottom) check(Arr[iBottomLeft]);
-      //right
-      if (Right && Arr[iRight].classList.contains('mine')) res++;
-      else if (checkEmpty && Right) check(Arr[iRight]);
-      //right-top
-      if (Right && Top && Arr[iTopRight].classList.contains('mine')) res++;
-      else if (checkEmpty && Right && Top) check(Arr[iTopRight]);
-      //right-bottom
-      if (Right && Bottom && Arr[iBottomRight].classList.contains('mine')) res++;
-      else if (checkEmpty && Right && Bottom) check(Arr[iBottomRight]);
-      return res;
+      for (const [index, condition] of Square) {
+        const cellIndex = index >= 0 ? index : -1; // Handle out-of-bounds indices
+        if (condition) check(Arr[cellIndex]);
+      }
+      
     }
     
     const minesArr = Array(minesCount).fill('mine');
@@ -174,11 +147,54 @@ document.addEventListener('DOMContentLoaded', () => {
       if (Arr[i].classList.contains('empty')) {
         alarm=dangerLevel(i);
         Arr[i].setAttribute('dangerLevel', alarm);
-        //Arr[i].innerHTML=alarm;
+        Arr[i].innerHTML=alarm;
       }
     }
     check(document.getElementById(idFirstCell));
-        
+       
+    function dangerLevel(itemNumber) {
+      res=0;
+      const i=Math.trunc(itemNumber/tableSize);
+      const j=(itemNumber % tableSize);
+      const iTop=itemNumber-tableSize;
+      const iTopLeft=iTop-1;
+      const iTopRight=iTop+1;
+      const iBottom=itemNumber+tableSize;
+      const iBottomLeft=iBottom-1;
+      const iBottomRight=iBottom+1;
+      const iLeft=itemNumber-1;
+      const iRight=itemNumber+1;
+      const Top=(iTop >= 0);
+      const Bottom=((iBottom) <= (tableSize**2-1));
+      const Left=j>0;
+      const Right=j<tableSize-1;
+      
+      //top
+      if (Top && Arr[iTop].classList.contains('mine')) res++;
+
+      //bottom
+      if (Bottom && Arr[iBottom].classList.contains('mine') ) res++;
+
+      //left
+      if (Left && Arr[iLeft].classList.contains('mine')) res++;
+
+      //left-top
+      if (Left && Top && Arr[iTopLeft].classList.contains('mine')) res++;
+
+      //left-bottom
+      if (Left && Bottom && Arr[iBottomLeft].classList.contains('mine')) res++;
+
+      //right
+      if (Right && Arr[iRight].classList.contains('mine')) res++;
+
+      //right-top
+      if (Right && Top && Arr[iTopRight].classList.contains('mine')) res++;
+
+      //right-bottom
+      if (Right && Bottom && Arr[iBottomRight].classList.contains('mine')) res++;
+            
+      return res;
+    }    
     //add label - Flag
     function flag(item) {
       if (gameOver) return;
@@ -202,7 +218,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function gameLost(item) {
       RESULT.innerHTML = 'Game over. Try again';
       gameOver = true;
-      TimerStartStop(false);
       //show hidden other mines
       Arr.forEach(elem => {
         if (elem.classList.contains('mine')) {
@@ -222,10 +237,10 @@ document.addEventListener('DOMContentLoaded', () => {
           countFlagMines++;
         }
         if (countFlagMines === minesCount) {
-          gameOver = true;
+          time = Math.trunc((performance.now()-time)/1000);
           RESULT.innerHTML = 'Hooray! You found all mines in '+time+' seconds and '+step+' moves!';
           RESULT.style.color = 'orange';
-          TimerStartStop(false);
+          gameOver = true;
         }
       }
     }
