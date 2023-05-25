@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (Arr[i].classList.contains('empty')) {
         alarm=dangerLevel(i);
         Arr[i].setAttribute('dangerLevel', alarm);
-        //Arr[i].innerHTML=alarm;
+        Arr[i].innerHTML=alarm;
       }
     }
     check(document.getElementById(idFirstCell));
@@ -198,10 +198,30 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
         
+        
+      //Is Game Won?
+    function isGameWon() {
+      let countFlagMines = 0;
+    
+        for (let i = 0; i < Arr.length; i++) {
+          if (Arr[i].classList.contains('flag') && Arr[i].classList.contains('mine')) {
+            countFlagMines++;
+          }
+        }
+        if (countFlagMines === minesCount) {
+          gameOver = true;
+          //console.log(time);
+          RESULT.innerHTML = 'Hooray! You found all mines in '+String(time)+' seconds and '+step+' moves!';
+          RESULT.style.color = 'orange';
+          TimerStartStop(false);
+        }
+      }
+      
     //Game Lost
     function gameLost(item) {
       RESULT.innerHTML = 'Game over. Try again';
       gameOver = true;
+      //console.log(time);
       TimerStartStop(false);
       //show hidden other mines
       Arr.forEach(elem => {
@@ -211,23 +231,6 @@ document.addEventListener('DOMContentLoaded', () => {
           elem.classList.add('checked');
         }
       })
-    }
-    
-    //Is Game Won?
-    function isGameWon() {
-    let countFlagMines = 0;
-  
-      for (let i = 0; i < Arr.length; i++) {
-        if (Arr[i].classList.contains('flag') && Arr[i].classList.contains('mine')) {
-          countFlagMines++;
-        }
-        if (countFlagMines === minesCount) {
-          gameOver = true;
-          RESULT.innerHTML = 'Hooray! You found all mines in '+time+' seconds and '+step+' moves!';
-          RESULT.style.color = 'orange';
-          TimerStartStop(false);
-        }
-      }
     }
   }
 })
