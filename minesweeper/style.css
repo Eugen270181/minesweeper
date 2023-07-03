@@ -1,0 +1,87 @@
+body {
+  padding: 0;
+  margin:0;
+  background-color: gainsboro;
+}
+
+.wrapper {
+  width: 500px;
+  margin:0 auto;
+  text-align: center;
+}
+
+.header-title {
+  color:blue;
+  font-size: 1rem;
+}
+
+.table {
+  display:flex;
+  height: 300px;
+  width: 300px;
+  margin:0 auto;
+  flex-wrap: wrap;
+  background-color: blue;
+  border: 5px solid yellow;
+}
+
+#flagsCount {
+  font-size: 20px;
+  text-align: center;
+}
+
+.start,
+.mine,
+.empty,
+.checked {
+  height: 30px;
+  width: 30px;
+  border: 4px solid;
+  border-color: black;
+  box-sizing: border-box;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.checked {
+  border: 2px solid;
+  background-color: white;
+}
+
+.alarm1 {
+  color:blue;
+}
+
+.alarm2 {
+  color:green;
+}
+
+.alarm3 {
+  color:orange;
+}
+
+.alarm4 {
+  color:red;
+}
+
+.alarm5 {
+  color:blueviolet;
+}
+
+#result {
+  color:red;
+}
+
+@media (max-width: 500px) {
+  .wrapper {
+    width: 320px;
+  }
+  .table {
+    background-color: green;
+  }
+  .header-title {
+    color:green;
+    font-size: 0.6rem;
+  }
+}
